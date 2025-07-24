@@ -2662,3 +2662,16 @@ end
     using Aqua
     Aqua.test_all(BMO)
 end
+
+@testset "Fiber coupling" begin
+    λ = 1.064e-6
+    fiber = BMO.StepIndexFiber(4.5e-6, 1.46, 1.455)
+    w = BMO.mode_field_radius(fiber, λ)
+    beam = BMO.GaussianBeamlet([0,-1e-6,0], [0,1,0], λ, w)
+    pd = BMO.PSFDetector(1e-2)
+    BMO.zrotate3d!(pd, π)
+    sys = BMO.System([pd])
+    BMO.solve_system!(sys, beam)
+    η = BMO.fiber_coupling(pd, fiber, λ)
+    @test η ≈ 1 atol=0.1
+end

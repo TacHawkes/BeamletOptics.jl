@@ -34,6 +34,7 @@ makedocs(;
             "Aspherical lenses" => "examples/aspherical_lenses.md",
             "Double Gauss lens" => "examples/double_gauss.md",
             "Lens groups" => "examples/lens_groups.md",
+            "Fiber coupling" => "examples/fiber_coupling.md",
         ],
         "Basics" => Any[
             "Introduction" => "basics/intro.md",
