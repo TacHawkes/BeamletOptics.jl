@@ -44,3 +44,6 @@ export Retroreflector
 
 # render
 export render!
+
+# fiber coupling
+export StepIndexFiber, fiber_coupling, coupling_efficiency, mode_field_radius, mode_field_diameter, electric_field

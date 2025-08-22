@@ -28,6 +28,7 @@ include("Gaussian.jl")
 include("System.jl")
 include("OpticalComponents/Components.jl")
 include("ObjectGroups.jl")
+include("FiberCoupling.jl")
 include("Render.jl")
 include("Exports.jl")
 
