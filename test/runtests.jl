@@ -2491,6 +2491,52 @@ end
     end
 end
 
+@testset "Polarization optics" begin
+    @testset "Half-wave plate" begin
+        wp = HalfWaveplate(1.0)
+        system = StaticSystem([wp])
+        pol = [sqrt(0.5), 0.0, sqrt(0.5)]
+        ray = PolarizedRay([0.0, -1.0, 0.0], [0, 1, 0], 1000e-9, pol)
+        beam = Beam(ray)
+        solve_system!(system, beam)
+        out = BMO.polarization(last(BMO.rays(beam)))
+        @test real(out[1]) ≈ sqrt(0.5)
+        @test real(out[3]) ≈ -sqrt(0.5)
+    end
+    @testset "Polarizing plate beamsplitter" begin
+        pbs = RectangularPolarizingPlateBeamsplitter(0.02, 0.02, 0.005, λ->1.5)
+        zrotate3d!(pbs, deg2rad(45))
+        system = StaticSystem([pbs])
+        pol = [sqrt(0.5), 0.0, sqrt(0.5)]
+        ray = PolarizedRay([0.0,-0.05,0.0], [0,1,0], 1000e-9, pol)
+        beam = Beam(ray)
+        solve_system!(system, beam)
+        @test length(beam.children) == 2
+    end
+
+    @testset "Polarizing cube beamsplitter" begin
+        cbs = PolarizingCubeBeamsplitter(0.02, λ->1.5)
+        translate3d!(cbs, [0, 0.05, 0])
+        system = StaticSystem([cbs])
+        pol = [sqrt(0.5), 0.0, sqrt(0.5)]
+        ray = PolarizedRay([0.0, 0.0, 0.0], [0,1,0], 1000e-9, pol)
+        beam = Beam(ray)
+        solve_system!(system, beam)
+        @test length(beam.children) == 2
+    end
+
+    @testset "Polarizing isolator" begin
+        iso = PolarizingIsolator(0.02, λ->1.5, offset=0.01)
+        translate3d!(iso, [0, 0.05, 0])
+        system = StaticSystem([iso])
+        pol = [1.0, 0.0, 0.0]
+        ray = PolarizedRay([0.0, 0.0, 0.0], [0,1,0], 1000e-9, pol)
+        beam = Beam(ray)
+        solve_system!(system, beam)
+        @test length(beam.children) == 2
+    end
+end
+
 @testset "Dummy objects" begin
     # Setup dummy cube and test beam
     cube_shape = BMO.CubeMesh(1)
